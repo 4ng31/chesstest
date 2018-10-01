@@ -1,9 +1,5 @@
 import chess
 import random
-import numpy as np
-import math
-
-
 
 def bestMove(game):
     ugly_moves = game.legal_moves
