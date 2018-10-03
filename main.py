@@ -3,6 +3,7 @@
 import sys
 import chess
 import random
+import numpy as np
 
 if sys.version_info[0] < 3:
     raise Exception("Python 3 or a more recent version is required.")
@@ -19,8 +20,7 @@ def calculateBestMove(game):
 
 
 def evaluateBoard(board):
-    fen = board.fen().split(' ')
-    print(fen[0])
+    fen = (board.fen().split(' '))[0]
     piece = {
         'P': 1,
         'R': 5,
@@ -35,15 +35,20 @@ def evaluateBoard(board):
         'q': -9,
         'k': -1000
     }
-    value = 0
-    while i < len(fen[0]):
-        value = value + piece[k]
-    for k, v in piece.items():
-        if f in fen[0]:
-            if f == piece[k]:
-                value = value + piece[k]
-                print("Code : {0}, Value : {1}".format(k, v))
-    print(value)
+    fen = fen.replace("/","")
+    fen = ''.join(i for i in fen if  not i.isdigit())
+    lst = np.asarray([piece[k] for k in list(fen)], dtype=np.int32)
+    print(lst.sum())
+
+    #value = 0
+    # while i < len(fen[0]):
+    #     value = value + piece[i]
+    # for k, v in piece.items():
+    #     if f in fen[0]:
+    #         if f == piece[k]:
+    #             value = value + piece[k]
+    #             print("Code : {0}, Value : {1}".format(k, v))
+    # print(value)
 
 
 def main():
