@@ -59,7 +59,7 @@ def main():
         themove = random.choice(listMoves(board))
         print(themove)
         board.push(themove)
-        print(board)
+        print_board(board)
         print("Posible moves: ")
         for mov in listMoves(board):
             print(mov)
@@ -69,5 +69,14 @@ def main():
         evaluateBoard(board)
         playing = not board.is_checkmate()
 
+def print_board(board):
+        PIECE_SYMBOLS = {'P': '♟', 'B': '♝', 'N': '♞', 'R': '♜', 'Q': '♛', 'K': '♚', 'p': '♙', 'b': '♗', 'n': '♘', 'r': '♖', 'q': '♕', 'k': '♔'}
+        fen = (board.fen().split(' '))[0]
+        b = str(board)
+        for k, v in PIECE_SYMBOLS.items():
+            #fen = fen.replace("{}".format(k),"{}".format(v))
+            b = b.replace("{}".format(k),"{}".format(v))
+        print(b)
+        print(fen)
 if __name__ == '__main__':
     main()
