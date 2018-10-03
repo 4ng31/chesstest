@@ -8,26 +8,61 @@ if sys.version_info[0] < 3:
     raise Exception("Python 3 or a more recent version is required.")
 
 
-def bestMove(game):
-    ugly_moves = game.legal_moves
-    return list(ugly_moves)
+def listMoves(game):
+    return list(game.legal_moves)
+
+def calculateBestMove(game):
+    moves = listMoves(game)
+    for move in moves:
+        _game = game
+        _game.push(move)
+
+
+def evaluateBoard(board):
+    fen = board.fen().split(' ')
+    print(fen[0])
+    piece = {
+        'P': 1,
+        'R': 5,
+        'N': 3,
+        'B': 3,
+        'Q': 9,
+        'K': 1000,
+        'p': -1,
+        'r': -5,
+        'n': -3,
+        'b': -3,
+        'q': -9,
+        'k': -1000
+    }
+    value = 0
+    while i < len(fen[0]):
+        value = value + piece[k]
+    for k, v in piece.items():
+        if f in fen[0]:
+            if f == piece[k]:
+                value = value + piece[k]
+                print("Code : {0}, Value : {1}".format(k, v))
+    print(value)
+
 
 def main():
     """Beat The Turk"""
-    game = chess.Board()
+    board = chess.Board()
     playing = True
     while playing:
-        themove = random.choice(bestMove(game))
+        themove = random.choice(listMoves(board))
         print(themove)
-        game.push(themove)
-        print(game)
+        board.push(themove)
+        print(board)
         print("Posible moves: ")
-        for mov in bestMove(game):
+        for mov in listMoves(board):
             print(mov)
         move = input("Enter your move: ")
-        if move in bestMove(game):
-            game.push(move)
-        playing = not game.is_checkmate()
+        if move in listMoves(board):
+            board.push(move)
+        evaluateBoard(board)
+        playing = not board.is_checkmate()
 
 if __name__ == '__main__':
     main()
