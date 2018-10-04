@@ -13,6 +13,12 @@ if sys.version_info[0] < 3:
 def clear():
         _ = system('clear')
 
+def listMovesSTR(game):
+    moves = []
+    for mov in list(game.legal_moves):
+        moves.append(str(mov))
+    return moves
+
 def listMoves(game):
     return list(game.legal_moves)
 
@@ -75,17 +81,20 @@ def main():
 
         moves = []
         for mov in listMoves(board):
-            
+
             moves.append(str(mov))
 
         for i in range(0, len(moves), 4):
             print(", ".join(moves[i:i+4]))
 
         move = input("Enter your move: ")
-        clear()
+        while move not in listMovesSTR(board):
+            move = input("Re-enter your move: ")
 
-        if move in listMoves(board):
-            board.push(move)
+        if move in listMovesSTR(board):
+            print(move)
+            board.push(chess.Move.from_uci(move))
+
         evaluateBoard(board)
         playing = not board.is_checkmate()
 
