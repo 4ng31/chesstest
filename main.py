@@ -56,6 +56,7 @@ def print_board(board):
                      'p': '♙', 'b': '♗', 'n': '♘',
                      'r': '♖', 'q': '♕', 'k': '♔'}
     fen = (board.fen().split(' '))[0]
+
     b = str(board)
     for k, v in PIECE_SYMBOLS.items():
         b = b.replace("{}".format(k), "{}".format(v))
@@ -68,6 +69,26 @@ def print_board(board):
     print("  %s"%row)
     #print(fen)
 
+def matrixChess(board):
+    fen = (board.fen().split(' '))[0]
+    matrixBoard = [0]*8
+    for i in range(8):
+        matrixBoard[i] = [0]*8
+    fen = fen.split('/')
+    i=i 
+    f=0
+    for fe in fen:
+        for piece in fe:
+            matrixBoard[f][i]=piece
+        i =+1
+        if i == 8:
+            i = 0
+            f =+1
+        print(matrixBoard[i][f])
+        print(fe) 
+            
+    print(matrixBoard)
+
 def main():
     """Beat The Turk"""
     board = chess.Board()
@@ -77,6 +98,7 @@ def main():
         print(themove)
         board.push(themove)
         print_board(board)
+        matrixChess(board)
         print("Posible moves: ")
 
         moves = []
