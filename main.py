@@ -48,18 +48,30 @@ def evaluateBoard(board):
     fen = ''.join(i for i in fen if not i.isdigit())
     lst = np.asarray([piece[k] for k in list(fen)], dtype=np.int32)
     print(lst.sum())
+def completeFen(board):
+    fen = (board.fen().split(' '))[0]
+    for i in range(1,9):
+        text = "0" * i
+        fen = fen.replace("{}".format(i),text)
+    fen = fen.replace("/","")
+    return fen
 
-def print_board(board):
-    clear()
+def replacePiece(text):
     PIECE_SYMBOLS = {'P': '♟', 'B': '♝', 'N': '♞',
                      'R': '♜', 'Q': '♛', 'K': '♚',
                      'p': '♙', 'b': '♗', 'n': '♘',
                      'r': '♖', 'q': '♕', 'k': '♔'}
+    for k, v in PIECE_SYMBOLS.items():
+        text = text.replace("{}".format(k), "{}".format(v))
+    return text
+
+def print_board(board):
+    clear()
+    completeFen(board)
     fen = (board.fen().split(' '))[0]
 
     b = str(board)
-    for k, v in PIECE_SYMBOLS.items():
-        b = b.replace("{}".format(k), "{}".format(v))
+    b = replacePiece(b)
     b = b.split('\n')
     col = [8,7,6,5,4,3,2,1]
     row = "A B C D E F G H"
@@ -70,24 +82,24 @@ def print_board(board):
     #print(fen)
 
 def matrixChess(board):
-    fen = (board.fen().split(' '))[0]
-    matrixBoard = [0]*8
-    for i in range(8):
-        matrixBoard[i] = [0]*8
-    fen = fen.split('/')
-    i=i 
-    f=0
-    for fe in fen:
-        for piece in fe:
-            matrixBoard[f][i]=piece
-        i =+1
-        if i == 8:
+    fen = completeFen(board)
+    matrixBoard = [{'a': '0', 'b': '0', 'c': '0','d': '0', 'e': '0', 'f': '0','g': '0', 'h': '0'} for i in range(8)]
+    row=0
+    i = 0
+    word="abcdefgh"
+    for piece in fen:
+        letter=word[i]
+        matrixBoard[row][letter]=piece
+        i = i + 1
+        if row < 7 and i>7:
+            row = row + 1
+        if i> 7:
             i = 0
-            f =+1
-        print(matrixBoard[i][f])
-        print(fe) 
-            
-    print(matrixBoard)
+    return matrixBoard
+def getPiece(board, x, y):
+    matrix = matrixChess(board)
+    x = int(x) - 1
+    return replacePiece(matrix[int(x)][y])
 
 def main():
     """Beat The Turk"""
@@ -98,14 +110,17 @@ def main():
         print(themove)
         board.push(themove)
         print_board(board)
-        matrixChess(board)
+        
         print("Posible moves: ")
 
         moves = []
+        n = 0
         for mov in listMoves(board):
-
-            moves.append(str(mov))
-
+            m = str(mov)
+            piece =  getPiece(board, m[1], m[0]) + " "+m[:2]
+            moves.append({'nro': n, 'piece': piece , 'mov': str(m)})
+            n = n + 1
+        print(moves)
         for i in range(0, len(moves), 4):
             print(", ".join(moves[i:i+4]))
 
