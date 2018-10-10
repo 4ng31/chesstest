@@ -132,21 +132,30 @@ def main():
         n = 0
         for mov in listMoves(board):
             m = str(mov)
-            print(m)
+            # print(m)
             piece = getPiece(board, m[1], m[0]) + " "+m[2:]
             moves.append({'nro': n, 'piece': piece, 'mov': str(m)})
             n += 1
         # print(moves)
 
-        for i in range(0, len(moves), 4):
-            print("%s%s,\t%s%s,\t%s%s,\t%s%s,"%(moves[i].get('nro'), (moves[i].get('piece')).replace(" ", ""),
-                                             moves[i+1].get('nro'), (moves[i+1].get('piece')).replace(" ", ""),
-                                             moves[i+2].get('nro'), (moves[i+2].get('piece')).replace(" ", ""),
-                                             moves[i+3].get('nro'), (moves[i+3].get('piece')).replace(" ", "")))
+        string=[]
+        for i in moves:
+            string.append(str(i.get('nro'))+(i.get('piece')).replace(" ", ""))
 
-        move = int(input("Enter your move: "))
-        while not in_dictlist('nro', move, moves):
+        for i in range(0, len(string), 4):
+            print(",\t".join(string[i:i+4]))
+
+        try:
             move = int(input("Re-enter your move: "))
+        except ValueError:
+            print("This is not a whole number.")
+            move=9999
+        while not in_dictlist('nro', move, moves):
+            try:
+                move = int(input("Re-enter your move: "))
+            except ValueError:
+                print("This is not a whole number.")
+                move = 9999
 
         if in_dictlist('nro', move, moves):
             board.push(chess.Move.from_uci(themove_dictlist('nro', move, moves)))
