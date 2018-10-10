@@ -5,7 +5,7 @@ import chess
 import random
 import numpy as np
 from os import system
-
+from itertools import chain
 
 if sys.version_info[0] < 3:
     raise Exception("Python 3 or a more recent version is required.")
@@ -48,6 +48,7 @@ def evaluateBoard(board):
     fen = ''.join(i for i in fen if not i.isdigit())
     lst = np.asarray([piece[k] for k in list(fen)], dtype=np.int32)
     print(lst.sum())
+
 def completeFen(board):
     fen = (board.fen().split(' '))[0]
     for i in range(1,9):
@@ -96,10 +97,24 @@ def matrixChess(board):
         if i> 7:
             i = 0
     return matrixBoard
+
 def getPiece(board, x, y):
     matrix = matrixChess(board)
     x = int(x) - 1
     return replacePiece(matrix[int(x)][y])
+
+def in_dictlist(key, value, my_dictlist):
+    for this in my_dictlist:
+        if this[key] == value:
+            return True
+    return False
+
+def themove_dictlist(key, value, my_dictlist):
+    for this in my_dictlist:
+        if this[key] == value:
+            print(this['mov'])
+            return this['mov']
+
 
 def main():
     """Beat The Turk"""
@@ -117,20 +132,24 @@ def main():
         n = 0
         for mov in listMoves(board):
             m = str(mov)
-            piece =  getPiece(board, m[1], m[0]) + " "+m[:2]
-            moves.append({'nro': n, 'piece': piece , 'mov': str(m)})
-            n = n + 1
-        print(moves)
+            print(m)
+            piece = getPiece(board, m[1], m[0]) + " "+m[2:]
+            moves.append({'nro': n, 'piece': piece, 'mov': str(m)})
+            n += 1
+        # print(moves)
+
         for i in range(0, len(moves), 4):
-            print(", ".join(moves[i:i+4]))
+            print("%s%s,\t%s%s,\t%s%s,\t%s%s,"%(moves[i].get('nro'), (moves[i].get('piece')).replace(" ", ""),
+                                             moves[i+1].get('nro'), (moves[i+1].get('piece')).replace(" ", ""),
+                                             moves[i+2].get('nro'), (moves[i+2].get('piece')).replace(" ", ""),
+                                             moves[i+3].get('nro'), (moves[i+3].get('piece')).replace(" ", "")))
 
-        move = input("Enter your move: ")
-        while move not in listMovesSTR(board):
-            move = input("Re-enter your move: ")
+        move = int(input("Enter your move: "))
+        while not in_dictlist('nro', move, moves):
+            move = int(input("Re-enter your move: "))
 
-        if move in listMovesSTR(board):
-            print(move)
-            board.push(chess.Move.from_uci(move))
+        if in_dictlist('nro', move, moves):
+            board.push(chess.Move.from_uci(themove_dictlist('nro', move, moves)))
 
         evaluateBoard(board)
         playing = not board.is_checkmate()
