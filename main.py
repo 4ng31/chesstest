@@ -3,9 +3,12 @@
 import sys
 import chess
 import random
+import minimax
 import numpy as np
 from os import system
 from itertools import chain
+
+
 
 if sys.version_info[0] < 3:
     raise Exception("Python 3 or a more recent version is required.")
@@ -22,11 +25,6 @@ def listMovesSTR(game):
 def listMoves(game):
     return list(game.legal_moves)
 
-def calculateBestMove(game):
-    moves = listMoves(game)
-    for move in moves:
-        _game = game
-        _game.push(move)
 
 def evaluateBoard(board):
     fen = (board.fen().split(' '))[0]
@@ -100,7 +98,7 @@ def matrixChess(board):
 
 def getPiece(board, x, y):
     matrix = matrixChess(board)
-    x = int(x) - 1
+    x = 8 - int(x) 
     return replacePiece(matrix[int(x)][y])
 
 def in_dictlist(key, value, my_dictlist):
@@ -112,15 +110,13 @@ def in_dictlist(key, value, my_dictlist):
 def themove_dictlist(key, value, my_dictlist):
     for this in my_dictlist:
         if this[key] == value:
-            print(this['mov'])
             return this['mov']
-
-
 def main():
     """Beat The Turk"""
     board = chess.Board()
     playing = True
     while playing:
+        #calculateBestMove(board)
         themove = random.choice(listMoves(board))
         print(themove)
         board.push(themove)
@@ -132,7 +128,7 @@ def main():
         n = 0
         for mov in listMoves(board):
             m = str(mov)
-            # print(m)
+            #print(getPiece(board, m[1], m[0]))
             piece = getPiece(board, m[1], m[0]) + " "+m[2:]
             moves.append({'nro': n, 'piece': piece, 'mov': str(m)})
             n += 1
@@ -140,7 +136,7 @@ def main():
 
         string=[]
         for i in moves:
-            string.append(str(i.get('nro'))+(i.get('piece')).replace(" ", ""))
+            string.append(str(i.get('nro'))+(i.get('piece')).replace(" ", " "))
 
         for i in range(0, len(string), 4):
             print(",\t".join(string[i:i+4]))
